@@ -9,7 +9,7 @@ const Login = ({ login, isAuthenticated }) => {
     email: "",
     password: "",
   });
-  const { email, category, password } = formData;
+  const { email, password } = formData;
   const onChange = (e) =>
     setFormData({
       ...formData,
@@ -17,7 +17,7 @@ const Login = ({ login, isAuthenticated }) => {
     });
   const onSubmit = async (e) => {
     e.preventDefault();
-    login({ email: email, category: category, password: password });
+    login({ email: email, password: password });
 
     console.log("Success");
   };

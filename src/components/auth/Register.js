@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   },
 });
 const Register = ({ isAuthenticated, onChange, onSubmit, formData }) => {
-  const { name, email, category, password, password2 } = formData;
+  const { name, email, password } = formData;
   const classes = useStyles();
   return (
     <Fragment>
@@ -64,16 +64,7 @@ const Register = ({ isAuthenticated, onChange, onSubmit, formData }) => {
                 required
               />
             </div>
-            <div className="form-group">
-              <input
-                type="text"
-                placeholder="category"
-                name="category"
-                value={category}
-                onChange={(e) => onChange(e)}
-                required
-              />
-            </div>
+
             <div className="form-group">
               <input
                 type="password"
@@ -85,17 +76,7 @@ const Register = ({ isAuthenticated, onChange, onSubmit, formData }) => {
                 required
               />
             </div>
-            <div className="form-group">
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                name="password2"
-                minLength="6"
-                value={password2}
-                onChange={(e) => onChange(e)}
-                required
-              />
-            </div>
+
             <Button
               type="submit"
               variant="contained"

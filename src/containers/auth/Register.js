@@ -10,11 +10,10 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    category: "",
     password: "",
-    password2: "",
+  
   });
-  const { name, email, category, password, password2 } = formData;
+  const { name, email, password } = formData;
   const onChange = (e) =>
     setFormData({
       ...formData,
@@ -23,8 +22,8 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
   const onSubmit = (e) => {
     console.log("hi");
     e.preventDefault();
-    if (password !== password2) setAlert("Passwords dont match", "danger");
-    else register({ name, email, category, password });
+    // if (password !== password2) setAlert("Passwords dont match", "danger");
+  register({ name, email, password });
   };
   if (isAuthenticated) {
     return <Redirect to="/dashboard" />;

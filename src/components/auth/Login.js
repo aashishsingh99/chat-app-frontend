@@ -42,7 +42,7 @@ const useStyles = makeStyles({
   },
 });
 const Login = ({ isAuthenticated, formData, onChange, onSubmit }) => {
-  const { email, category, password } = formData;
+  const { email, password } = formData;
   const classes = useStyles();
   return (
     <Fragment>
@@ -72,7 +72,7 @@ const Login = ({ isAuthenticated, formData, onChange, onSubmit }) => {
                 required
               />
             </div>
-            <div className="form-group">
+            {/* <div className="form-group">
               <input
                 type="text"
                 placeholder="Category"
@@ -81,7 +81,7 @@ const Login = ({ isAuthenticated, formData, onChange, onSubmit }) => {
                 onChange={(e) => onChange(e)}
                 required
               />
-            </div>
+            </div> */}
             <div className="form-group">
               <input
                 type="Password"

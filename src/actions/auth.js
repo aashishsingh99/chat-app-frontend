@@ -34,16 +34,14 @@ export const loadUser = () => async (dispatch) => {
 };
 
 // Register User
-export const register = ({ name, email, category, password }) => async (
-  dispatch
-) => {
+export const register = ({ name, email, password }) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
     },
   };
   console.log("action");
-  const body = JSON.stringify({ name, email, category, password });
+  const body = JSON.stringify({ name, email, password });
   try {
     const res = await axios.post("/api/users", body, config);
     localStorage.setItem("token", res.data.token);
@@ -75,7 +73,6 @@ export const login = (formData) => async (dispatch) => {
   // const body = JSON.stringify({ email, category, password });
   //console.log(email);
   try {
-    console.log("FISH");
     const res = await axios.post("/api/auth", formData, config);
     console.log("HIII");
     console.log(res);
