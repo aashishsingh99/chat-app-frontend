@@ -10,6 +10,7 @@ import Dashboard from "./containers/dashboard/dashboard";
 import store from "./store";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import PrivateRoute from "./components/routing/PrivateRoute";
+import chat from "./containers/Chat";
 import "./App.css";
 const App = () => {
   useEffect(() => {
@@ -29,6 +30,7 @@ const App = () => {
             <Alert />
             <Switch>
               <Route exact path="/register" component={Register} />
+              <Route exact path="/chat" component={chat} />
               <Route exact path="/login" component={Login} />
               {/* <Route exact path="/profiles" component={Profiles} />
               <Route exact path="/profile/:id" component={Profile} /> */}

@@ -83,10 +83,10 @@ export const login = (formData) => async (dispatch) => {
     });
     dispatch(loadUser());
   } catch (err) {
-    const errors = err.response.data.errors;
-    if (errors) {
-      errors.forEach((errpr) => dispatch(setAlert(errors.msg, "danger")));
-    }
+    // const errors = err.response.data.errors;
+    // if (errors) {
+    //   errors.forEach((errpr) => dispatch(setAlert(errors.msg, "danger")));
+    // }
     localStorage.removeItem("token");
 
     dispatch({
