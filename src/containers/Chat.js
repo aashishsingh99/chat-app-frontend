@@ -6,6 +6,7 @@ import Chat1 from "../components/Chat";
 
 const Chat = ({ user_name }) => {
   console.log("inside chat container");
+  console.log(user_name);
 //   const onSubmit = async (e) => {
 //     e.preventDefault();
 
