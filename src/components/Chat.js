@@ -19,6 +19,8 @@ import { connect } from "react-redux";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { useState } from "react";
 import Button from "@material-ui/core/Button";
+import { Get_Conv } from "../actions/Get_Conv";
+import { Add_Conv } from "../actions/Add_Conv";
 
 const useStyles = makeStyles({
   root: {
@@ -44,7 +46,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Chat = ({ user_name }) => {
+const Chat = ({ user_name, Get_Conv, Add_Conv, conversation }) => {
   const [contacts, setContacts] = useState([]);
 
   const [temp2, settemp2] = useState("");
@@ -54,7 +56,11 @@ const Chat = ({ user_name }) => {
 
     setContacts((con) => [...con, temp2]);
     //search.value="";
-    document.getElementById("outlined-basic-email").value=""
+    document.getElementById("outlined-basic-email").value = "";
+    //add conv
+    Add_Conv({ user_name: temp2 });
+    console.log("calling get");
+    Get_Conv({ user_name: user_name });
     console.log("on click");
   };
 
@@ -101,14 +107,19 @@ const Chat = ({ user_name }) => {
           </Grid>
           <Divider />
           <List>
-            {contacts.map((x) => (
-              <ListItem button key={x}>
-                <ListItemIcon>
-                  <PersonAddIcon />
-                </ListItemIcon>
-                <ListItemText primary={x}>{x}</ListItemText>
-              </ListItem>
-            ))}
+         
+            {!conversation.length ? (
+              <h1>No Contacts Found</h1>
+            ) : (
+              conversation.map((x) => (
+                <ListItem button key={x.recipients[1].name}>
+                  <ListItemIcon>
+                    <PersonAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={x.recipients[1].name}>{x.recipients[1].name}</ListItemText>
+                </ListItem>
+              ))
+            )}
           </List>
         </Grid>
         <Grid item xs={9}>
@@ -175,5 +186,12 @@ const Chat = ({ user_name }) => {
 };
 Chat.propTypes = {
   user_name: PropTypes.string,
+  Get_Conv: PropTypes.func.isRequired,
+  Add_Conv: PropTypes.func.isRequired,
+  conversation: PropTypes.object.isRequired,
 };
-export default Chat;
+const mapStateToProps = (state) => ({
+  conversation: state.auth.conversation,
+});
+
+export default connect(mapStateToProps, { Get_Conv, Add_Conv })(Chat);

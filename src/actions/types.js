@@ -23,3 +23,5 @@ export const ERROR_REQUEST = "ERROR_REQUEST";
 export const ACCEPT_REQUEST = "ACCEPT_REQUEST";
 export const REJECT_REQUEST = "REJECT_REQUEST";
 export const GET_REQUESTS = "GET_REQUESTS";
+export const GET_CONV="GET_CONV";
+export const CONV_ERROR="CONV_ERROR";

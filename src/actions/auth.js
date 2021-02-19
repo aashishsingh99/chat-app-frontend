@@ -13,10 +13,11 @@ import { setAlert } from "./alert.js";
 import setAuthToken from "../utils/setAuthToken";
 export const loadUser = () => async (dispatch) => {
   //console.log(localStorage.token);
-  if (localStorage.token) {
-    setAuthToken(localStorage.token);
-  }
+
   try {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+    }
     //console.log("in");
     const res = await axios.get("api/auth");
     console.log("in user loaded");
@@ -76,11 +77,12 @@ export const login = (formData) => async (dispatch) => {
     const res = await axios.post("/api/auth", formData, config);
     console.log("HIII");
     console.log(res);
-    localStorage.setItem("token", res.data.token);
+   
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data,
     });
+
     dispatch(loadUser());
   } catch (err) {
     // const errors = err.response.data.errors;

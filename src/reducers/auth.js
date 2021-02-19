@@ -6,6 +6,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  CONV_ERROR,GET_CONV,
 } from "../actions/types";
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   loading: true,
   user: null,
   category: null,
+  conversation:[],
 };
 
 function authReducer(state = initialState, action) {
@@ -29,6 +31,20 @@ function authReducer(state = initialState, action) {
         category: payload.category,
       };
     }
+     case GET_CONV:{
+      return {
+        ...state,
+        loading: false,
+        conversation: payload,
+      };
+    }
+    case CONV_ERROR:
+      return {
+        ...state,
+        error: payload,
+       conversation:[],
+        loading: false,
+      };
 
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:

@@ -12,9 +12,9 @@ const NavBar = ({ getbuses, logout, auth: { isAuthenticated, loading } }) => {
   const authLinks = (
     <ul>
       <li>
-        <Link to="/Buses">
+        {/* <Link to="/Buses">
           <DirectionsBusIcon fontSize="large" />
-        </Link>
+        </Link> */}
       </li>
       <li>
         <a onClick={logout} href="#!">
