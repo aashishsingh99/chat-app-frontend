@@ -28,7 +28,7 @@ function authReducer(state = initialState, action) {
         isAuthenticated: true,
         loading: false,
         user: payload,
-        category: payload.category,
+        
       };
     }
      case GET_CONV:{
@@ -64,6 +64,7 @@ function authReducer(state = initialState, action) {
         ...payload,
         isAuthenticated: true,
         loading: false,
+        user:payload,
       };
     case REGISTER_FAIL:
     case AUTH_ERROR:
@@ -75,6 +76,7 @@ function authReducer(state = initialState, action) {
         token: null,
         isAuthenticated: false,
         loading: false,
+        user:null,
       };
     default:
       return state;
