@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -21,7 +21,9 @@ import { useState } from "react";
 import Button from "@material-ui/core/Button";
 import { Get_Conv } from "../actions/Get_Conv";
 import { Add_Conv } from "../actions/Add_Conv";
-
+const io = require("socket.io-client");
+const ENDPOINT = "http://localhost:5000";
+let socket;
 
 const useStyles = makeStyles({
   root: {
@@ -47,12 +49,25 @@ const useStyles = makeStyles({
   },
 });
 
-const Chat = ({ user_name, Get_Conv, Add_Conv, conversation }) => {
-
-  useEffect(()=>{
-    console.log("i am useeffect")
+const Chat = ({ user_name, Get_Conv, Add_Conv, conversation, auth }) => {
+  useEffect(() => {
+    console.log("i am useeffect");
+    //const name = auth.user.name;
     Get_Conv({ user_name: user_name });
-  },[])
+  }, []);
+  useEffect(() => {
+    socket = io(ENDPOINT, { transports: ["websocket", "polling"] });
+
+    if (auth.user.name !== undefined) {
+      console.log("AAAAAAAA");
+      socket.emit("join", { user_name, conversation }, (error) => {
+        if (error) {
+          alert(error);
+        }
+      });
+    }
+  }, [ENDPOINT, auth]);
+
   const [contacts, setContacts] = useState([]);
 
   const [temp2, settemp2] = useState("");
@@ -65,7 +80,7 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation }) => {
     document.getElementById("outlined-basic-email").value = "";
     //add conv
     Add_Conv({ user_name: temp2 });
-    
+
     console.log("calling get");
     //Get_Conv({ user_name: user_name });
     //console.log("on click");
@@ -114,7 +129,6 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation }) => {
           </Grid>
           <Divider />
           <List>
-         
             {!conversation.length ? (
               <h1>No Contacts Found</h1>
             ) : (
@@ -123,7 +137,9 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation }) => {
                   <ListItemIcon>
                     <PersonAddIcon />
                   </ListItemIcon>
-                  <ListItemText primary={x.recipients[1].name}>{x.recipients[1].name}</ListItemText>
+                  <ListItemText primary={x.recipients[1].name}>
+                    {x.recipients[1].name}
+                  </ListItemText>
                 </ListItem>
               ))
             )}
@@ -199,6 +215,7 @@ Chat.propTypes = {
 };
 const mapStateToProps = (state) => ({
   conversation: state.auth.conversation,
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps, { Get_Conv, Add_Conv })(Chat);
