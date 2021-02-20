@@ -65,6 +65,7 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation }) => {
     document.getElementById("outlined-basic-email").value = "";
     //add conv
     Add_Conv({ user_name: temp2 });
+    
     console.log("calling get");
     //Get_Conv({ user_name: user_name });
     //console.log("on click");

@@ -4,6 +4,11 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { login } from "../../actions/auth";
 import Present_login from "../../components/auth/Login";
+const io = require("socket.io-client");
+// const socket = io();
+const temp="http://LocalHost:5000"
+const socket = io(temp, { transports: ["websocket"] });
+
 const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: "",
