@@ -6,7 +6,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
-  CONV_ERROR,GET_CONV,
+  CONV_ERROR,GET_CONV,ADD_CONV,
 } from "../actions/types";
 
 const initialState = {
@@ -36,6 +36,16 @@ function authReducer(state = initialState, action) {
         ...state,
         loading: false,
         conversation: payload,
+      };
+    }
+    case ADD_CONV: {
+      state.conversation = state.conversation.filter(
+        conversations => conversations._id !== payload._id
+      );
+      console.log(payload);
+      return {
+        ...state,
+        conversation: [payload, ...state.conversation],
       };
     }
     case CONV_ERROR:

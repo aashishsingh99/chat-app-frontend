@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -21,6 +21,7 @@ import { useState } from "react";
 import Button from "@material-ui/core/Button";
 import { Get_Conv } from "../actions/Get_Conv";
 import { Add_Conv } from "../actions/Add_Conv";
+
 
 const useStyles = makeStyles({
   root: {
@@ -47,6 +48,11 @@ const useStyles = makeStyles({
 });
 
 const Chat = ({ user_name, Get_Conv, Add_Conv, conversation }) => {
+
+  useEffect(()=>{
+    console.log("i am useeffect")
+    Get_Conv({ user_name: user_name });
+  },[])
   const [contacts, setContacts] = useState([]);
 
   const [temp2, settemp2] = useState("");
@@ -60,11 +66,11 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation }) => {
     //add conv
     Add_Conv({ user_name: temp2 });
     console.log("calling get");
-    Get_Conv({ user_name: user_name });
-    console.log("on click");
+    //Get_Conv({ user_name: user_name });
+    //console.log("on click");
   };
 
-  console.log("hello everybody");
+  //console.log("hello everybody");
 
   const classes = useStyles();
 
