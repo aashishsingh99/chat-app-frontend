@@ -21,6 +21,7 @@ import { useState } from "react";
 import Button from "@material-ui/core/Button";
 import { Get_Conv } from "../actions/Get_Conv";
 import { Add_Conv } from "../actions/Add_Conv";
+import { newConversation } from "../actions/newConversation";
 const io = require("socket.io-client");
 const ENDPOINT = "http://localhost:5000";
 let socket;
@@ -49,7 +50,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Chat = ({ user_name, Get_Conv, Add_Conv, conversation, auth }) => {
+const Chat = ({ user_name, Get_Conv, Add_Conv, conversation, auth,newConversation }) => {
   useEffect(() => {
     console.log("i am useeffect");
     //const name = auth.user.name;
@@ -133,7 +134,8 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation, auth }) => {
               <h1>No Contacts Found</h1>
             ) : (
               conversation.map((x) => (
-                <ListItem button key={x.recipients[1].name}>
+                // console.log(x._id)
+                <ListItem button onClick={newConversation({chatid:x._id})} key={x.recipients[1].name}>
                   <ListItemIcon>
                     <PersonAddIcon />
                   </ListItemIcon>
@@ -218,4 +220,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, { Get_Conv, Add_Conv })(Chat);
+export default connect(mapStateToProps, { Get_Conv, Add_Conv,newConversation })(Chat);

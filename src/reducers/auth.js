@@ -6,7 +6,10 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
-  CONV_ERROR,GET_CONV,ADD_CONV,
+  CONV_ERROR,
+  GET_CONV,
+  ADD_CONV,
+  CURRENT_CONV,
 } from "../actions/types";
 
 const initialState = {
@@ -15,7 +18,8 @@ const initialState = {
   loading: true,
   user: null,
   category: null,
-  conversation:[],
+  conversation: [],
+  currentconversation: {},
 };
 
 function authReducer(state = initialState, action) {
@@ -28,19 +32,28 @@ function authReducer(state = initialState, action) {
         isAuthenticated: true,
         loading: false,
         user: payload,
-        
       };
     }
-     case GET_CONV:{
+    case CURRENT_CONV: {
+      console.log("this is current convo")
+      console.log(payload)
+      return {
+        ...state,
+        loading: false,
+        currentconversation: payload,
+      };
+    }
+    case GET_CONV: {
       return {
         ...state,
         loading: false,
         conversation: payload,
       };
     }
+ 
     case ADD_CONV: {
       state.conversation = state.conversation.filter(
-        conversations => conversations._id !== payload._id
+        (conversations) => conversations._id !== payload._id
       );
       console.log(payload);
       return {
@@ -52,7 +65,7 @@ function authReducer(state = initialState, action) {
       return {
         ...state,
         error: payload,
-       conversation:[],
+        conversation: [],
         loading: false,
       };
 
@@ -64,7 +77,7 @@ function authReducer(state = initialState, action) {
         ...payload,
         isAuthenticated: true,
         loading: false,
-        user:payload,
+        user: payload,
       };
     case REGISTER_FAIL:
     case AUTH_ERROR:
@@ -76,7 +89,7 @@ function authReducer(state = initialState, action) {
         token: null,
         isAuthenticated: false,
         loading: false,
-        user:null,
+        user: null,
       };
     default:
       return state;

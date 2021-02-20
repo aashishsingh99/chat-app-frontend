@@ -26,3 +26,4 @@ export const GET_REQUESTS = "GET_REQUESTS";
 export const GET_CONV="GET_CONV";
 export const CONV_ERROR="CONV_ERROR";
 export const ADD_CONV="ADD_CONV";
+export const CURRENT_CONV="CURRENT_CONV";
