@@ -79,7 +79,7 @@ const Chat = ({
   useEffect(() => {
     socket = io(ENDPOINT, { transports: ["websocket", "polling"] });
 
-    if (auth.user.name !== undefined) {
+    if (auth.user.name !== undefined && conversation.length>0) {
       console.log("AAAAAAAA");
       socket.emit("join", { user_name, conversation }, (error) => {
         if (error) {
@@ -87,7 +87,15 @@ const Chat = ({
         }
       });
     }
-  }, [ENDPOINT, auth]);
+  }, [ENDPOINT, auth,conversation]);
+
+  useEffect(() => {
+    socket.on('emit_message', ({ text }) => {
+      console.log(text, 'socket newMessage');
+      alert(text);// save in state 
+    });
+
+  }, []);
 
   const [contacts, setContacts] = useState([]);
 
@@ -151,6 +159,12 @@ const Chat = ({
           </Grid>
           <Divider />
           <List>
+          {conversation.map(conversations => {
+            conversations.recipients = conversations.recipients.filter(
+              recipient => recipient._id !== auth.user._id
+            );
+          })}
+
             {!conversation.length ? (
               <h1>No Contacts Found</h1>
             ) : (
@@ -159,13 +173,13 @@ const Chat = ({
                 <ListItem
                   button
                   onClick={(e) => fun({ chatid: x._id })}
-                  key={x.recipients[1].name}
+                  key={x.recipients[0].name}
                 >
                   <ListItemIcon>
                     <PersonAddIcon />
                   </ListItemIcon>
-                  <ListItemText primary={x.recipients[1].name}>
-                    {x.recipients[1].name}
+                  <ListItemText primary={x.recipients[0].name}>
+                    {x.recipients[0].name}
                   </ListItemText>
                 </ListItem>
               ))
@@ -231,6 +245,7 @@ const Chat = ({
                     text: message,
                     chatRoomId: currentconversation._id,
                   })
+
                 }
                 color="primary"
                 aria-label="add"
