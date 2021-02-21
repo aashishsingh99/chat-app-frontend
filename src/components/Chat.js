@@ -22,6 +22,8 @@ import Button from "@material-ui/core/Button";
 import { Get_Conv } from "../actions/Get_Conv";
 import { Add_Conv } from "../actions/Add_Conv";
 import { newConversation } from "../actions/newConversation";
+import { Get_Events } from "../actions/Get_Events";
+import { postMessage } from "../actions/postMessage";
 const io = require("socket.io-client");
 const ENDPOINT = "http://localhost:5000";
 let socket;
@@ -50,7 +52,25 @@ const useStyles = makeStyles({
   },
 });
 
-const Chat = ({ user_name, Get_Conv, Add_Conv, conversation, auth,newConversation }) => {
+const Chat = ({
+  user_name,
+  Get_Conv,
+  Add_Conv,
+  conversation,
+  auth,
+  newConversation,
+  Get_Events,
+  currentconversation,
+  postMessage,
+}) => {
+  const fun = ({ chatid }) => {
+    console.log("fun");
+    console.log(chatid);
+    newConversation({ chatid: chatid });
+    console.log("calling get function sakshiiiiii");
+    console.log(Date.now);
+    Get_Events({ chatRoomId: chatid });
+  };
   useEffect(() => {
     console.log("i am useeffect");
     //const name = auth.user.name;
@@ -72,6 +92,7 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation, auth,newConversatio
   const [contacts, setContacts] = useState([]);
 
   const [temp2, settemp2] = useState("");
+  const [message, setmessage] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -135,7 +156,11 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation, auth,newConversatio
             ) : (
               conversation.map((x) => (
                 // console.log(x._id)
-                <ListItem button onClick={newConversation({chatid:x._id})} key={x.recipients[1].name}>
+                <ListItem
+                  button
+                  onClick={(e) => fun({ chatid: x._id })}
+                  key={x.recipients[1].name}
+                >
                   <ListItemIcon>
                     <PersonAddIcon />
                   </ListItemIcon>
@@ -196,10 +221,20 @@ const Chat = ({ user_name, Get_Conv, Add_Conv, conversation, auth,newConversatio
                 id="outlined-basic-email"
                 label="Type Something"
                 fullWidth
+                onChange={(e) => setmessage(e.target.value)}
               />
             </Grid>
             <Grid xs={1} align="right">
-              <Fab color="primary" aria-label="add">
+              <Fab
+                onClick={(e) =>
+                  postMessage({
+                    text: message,
+                    chatRoomId: currentconversation._id,
+                  })
+                }
+                color="primary"
+                aria-label="add"
+              >
                 <SendIcon />
               </Fab>
             </Grid>
@@ -214,10 +249,20 @@ Chat.propTypes = {
   Get_Conv: PropTypes.func.isRequired,
   Add_Conv: PropTypes.func.isRequired,
   conversation: PropTypes.object.isRequired,
+  Get_Events: PropTypes.func.isRequired,
+  currentconversation: PropTypes.object.isRequired,
+  postMessage: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => ({
   conversation: state.auth.conversation,
   auth: state.auth,
+  currentconversation: state.auth.currentconversation,
 });
 
-export default connect(mapStateToProps, { Get_Conv, Add_Conv,newConversation })(Chat);
+export default connect(mapStateToProps, {
+  Get_Conv,
+  Add_Conv,
+  newConversation,
+  Get_Events,
+  postMessage,
+})(Chat);

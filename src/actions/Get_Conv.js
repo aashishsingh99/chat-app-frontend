@@ -21,8 +21,8 @@ export const Get_Conv = ({ user_name }) => async (dispatch) => {
     });
     
   } catch (err) {
-    // dispatch({
-    //   type: CONV_ERROR,
-    // });
+    dispatch({
+      type: CONV_ERROR,
+    });
   }
 };

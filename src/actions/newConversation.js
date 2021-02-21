@@ -14,18 +14,17 @@ export const newConversation = ({ chatid }) => async (dispatch) => {
   const body = JSON.stringify({ chatid });
   try {
     console.log("inside action new conversation");
-    // const res = await axios.post("/api/users/conversation", body, config);
+    const res = await axios.post("/api/users/conversation", body, config);
     console.log("hello aashish");
-    // console.log(res.data);
+    console.log(res.data);
     dispatch({
       type: CURRENT_CONV,
-    //   payload: res.data,
+      payload: res.data,
     });
   } catch (err) {
     console.log(err);
-    // dispatch({
-    //   type: CONV_ERROR,
-
-    // });
+    dispatch({
+      type: CONV_ERROR,
+    });
   }
 };

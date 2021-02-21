@@ -10,6 +10,8 @@ import {
   GET_CONV,
   ADD_CONV,
   CURRENT_CONV,
+  GET_EVENTS,
+  ADDMESSAGE,
 } from "../actions/types";
 
 const initialState = {
@@ -20,6 +22,7 @@ const initialState = {
   category: null,
   conversation: [],
   currentconversation: {},
+  currentevents: {},
 };
 
 function authReducer(state = initialState, action) {
@@ -34,9 +37,26 @@ function authReducer(state = initialState, action) {
         user: payload,
       };
     }
+    case ADDMESSAGE: {
+      return {
+        ...state,
+        isAuthenticated: true,
+        loading: false,
+        currentevents: [...state.currentevents,payload]
+      };
+    }
+    case GET_EVENTS: {
+      console.log("this is current events  convo");
+      console.log(payload);
+      return {
+        ...state,
+        loading: false,
+        currentevents: payload,
+      };
+    }
     case CURRENT_CONV: {
-      console.log("this is current convo")
-      console.log(payload)
+      console.log("this is current convo");
+      console.log(payload);
       return {
         ...state,
         loading: false,
@@ -50,7 +70,7 @@ function authReducer(state = initialState, action) {
         conversation: payload,
       };
     }
- 
+
     case ADD_CONV: {
       state.conversation = state.conversation.filter(
         (conversations) => conversations._id !== payload._id
