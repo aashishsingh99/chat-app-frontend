@@ -62,6 +62,7 @@ const Chat = ({
   Get_Events,
   currentconversation,
   postMessage,
+  currentevents,
 }) => {
   const fun = ({ chatid }) => {
     console.log("fun");
@@ -91,9 +92,9 @@ const Chat = ({
 
   useEffect(() => {
     socket.on("emit_message", ({ text }) => {
-      alert(text); 
+      //console.log(text);
       // console.log(text, "socket newMessage");
-     // save in state
+      // save in state
     });
   }, []);
 
@@ -244,6 +245,7 @@ const Chat = ({
                   postMessage({
                     text: message,
                     chatRoomId: currentconversation._id,
+                    messageId:currentevents.length+1,
                   })
                 }
                 color="primary"
@@ -266,11 +268,13 @@ Chat.propTypes = {
   Get_Events: PropTypes.func.isRequired,
   currentconversation: PropTypes.object.isRequired,
   postMessage: PropTypes.func.isRequired,
+  currentevents:PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => ({
   conversation: state.auth.conversation,
   auth: state.auth,
   currentconversation: state.auth.currentconversation,
+  currentevents: state.auth.currentevents,
 });
 
 export default connect(mapStateToProps, {
