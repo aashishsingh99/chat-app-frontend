@@ -79,7 +79,7 @@ const Chat = ({
   useEffect(() => {
     socket = io(ENDPOINT, { transports: ["websocket", "polling"] });
 
-    if (auth.user.name !== undefined && conversation.length>0) {
+    if (auth.user.name !== undefined && conversation.length > 0) {
       console.log("AAAAAAAA");
       socket.emit("join", { user_name, conversation }, (error) => {
         if (error) {
@@ -87,14 +87,14 @@ const Chat = ({
         }
       });
     }
-  }, [ENDPOINT, auth,conversation]);
+  }, [ENDPOINT, auth, conversation]);
 
   useEffect(() => {
-    socket.on('emit_message', ({ text }) => {
-      console.log(text, 'socket newMessage');
-      alert(text);// save in state 
+    socket.on("emit_message", ({ text }) => {
+      alert(text); 
+      // console.log(text, "socket newMessage");
+     // save in state
     });
-
   }, []);
 
   const [contacts, setContacts] = useState([]);
@@ -159,11 +159,11 @@ const Chat = ({
           </Grid>
           <Divider />
           <List>
-          {conversation.map(conversations => {
-            conversations.recipients = conversations.recipients.filter(
-              recipient => recipient._id !== auth.user._id
-            );
-          })}
+            {conversation.map((conversations) => {
+              conversations.recipients = conversations.recipients.filter(
+                (recipient) => recipient._id !== auth.user._id
+              );
+            })}
 
             {!conversation.length ? (
               <h1>No Contacts Found</h1>
@@ -245,7 +245,6 @@ const Chat = ({
                     text: message,
                     chatRoomId: currentconversation._id,
                   })
-
                 }
                 color="primary"
                 aria-label="add"

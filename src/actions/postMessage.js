@@ -27,6 +27,7 @@ export const postMessage = ({ text, chatRoomId }) => async (dispatch) => {
     console.log("calling socket");
     let socket = io(ENDPOINT, { transports: ["websocket", "polling"] });
     socket.emit("new_message", { text,chatRoomId}, (error) => {
+      // console.log("YYYYYYYYYYYYYYYYYYYYY");
       if (error) {
         alert(error);
       }
