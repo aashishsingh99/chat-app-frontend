@@ -13,6 +13,7 @@ import {
   GET_EVENTS,
   ADDMESSAGE,
   CONV_STATE,
+  STATE_CONVERSATION,
 } from "../actions/types";
 
 const initialState = {
@@ -40,6 +41,14 @@ function authReducer(state = initialState, action) {
       };
     }
     case ADDMESSAGE: {
+      return {
+        ...state,
+        isAuthenticated: true,
+        loading: false,
+        currentevents: [...state.currentevents,payload]
+      };
+    }  
+    case STATE_CONVERSATION: {
       return {
         ...state,
         isAuthenticated: true,

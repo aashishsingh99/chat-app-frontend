@@ -24,6 +24,7 @@ import { Add_Conv } from "../actions/Add_Conv";
 import { newConversation } from "../actions/newConversation";
 import { Get_Events } from "../actions/Get_Events";
 import { postMessage } from "../actions/postMessage";
+import { State_conversation } from "../actions/State_conversation";
 import { new_conver_state } from "../actions/new_conver_state";
 import socket from "../socketConfig";
 
@@ -66,6 +67,7 @@ const Chat = ({
   postMessage,
   currentevents,
   new_conver_state,
+  State_conversation,
 }) => {
   const fun = ({ chatid }) => {
     console.log("fun");
@@ -105,9 +107,18 @@ const Chat = ({
   useEffect(()=>{
     socket.on("new_message",({event})=>{
       console.log("message new")
-      console.log(event)
+      const text = event.text 
+      const chatRoomId=event.chatRoomId
+      const messageId=event.messageId
+      if (currentconversation && currentconversation._id === event.chatRoomId) {
+         State_conversation({event});
+      } else {
+        //send notification of new event
+      }
+      
+      
     })
-  },[])
+  },[currentconversation])
 
   const [contacts, setContacts] = useState([]);
 
@@ -282,4 +293,5 @@ export default connect(mapStateToProps, {
   Get_Events,
   postMessage,
   new_conver_state,
+  State_conversation,
 })(Chat);
