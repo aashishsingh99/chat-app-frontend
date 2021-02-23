@@ -1,8 +1,7 @@
 import axios from "axios";
  import {ADDMESSAGE } from "./types";
 import { CONV_ERROR } from "./types";
-const io = require("socket.io-client");
-const ENDPOINT = "http://localhost:5000"
+import socket from "../socketConfig";
 
 // Register User
 export const postMessage = ({ text, chatRoomId,messageId }) => async (dispatch) => {
@@ -25,14 +24,14 @@ export const postMessage = ({ text, chatRoomId,messageId }) => async (dispatch) 
       type: ADDMESSAGE,
       payload: res.data,
     });
-    console.log("calling socket");
-    let socket = io(ENDPOINT, { transports: ["websocket", "polling"] });
-    socket.emit("new_message", { text,chatRoomId}, (error) => {
-       //console.log("YYYYYYYYYYYYYYYYYYYYY");
-      if (error) {
-        alert(error);
-      }
-    });
+    //console.log("calling socket");
+    
+    // socket.emit("new_message", { text,chatRoomId}, (error) => {
+    //    console.log("YYYYYYYYYYYYYYYYYYYYY");
+    //   if (error) {
+    //     alert(error);
+    //   }
+    // });
   } catch (err) {
     console.log(err);
     // dispatch({

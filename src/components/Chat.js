@@ -25,9 +25,10 @@ import { newConversation } from "../actions/newConversation";
 import { Get_Events } from "../actions/Get_Events";
 import { postMessage } from "../actions/postMessage";
 import { new_conver_state } from "../actions/new_conver_state";
-const io = require("socket.io-client");
-const ENDPOINT = "http://localhost:5000";
-let socket;
+import socket from "../socketConfig";
+
+
+
 
 const useStyles = makeStyles({
   root: {
@@ -80,7 +81,7 @@ const Chat = ({
     Get_Conv({ user_name: user_name });
   }, []);
   useEffect(() => {
-    socket = io(ENDPOINT, { transports: ["websocket", "polling"] });
+    
 
     if (auth.user.name !== undefined && conversation.length > 0) {
       const me = auth.user.name;
@@ -91,7 +92,7 @@ const Chat = ({
         }
       });
     }
-  }, [ENDPOINT, auth, conversation]);
+  }, [auth, conversation]);
 
   useEffect(() => {
     socket.on("newConversation", ({ newConvo }) => {
@@ -100,6 +101,13 @@ const Chat = ({
       new_conver_state(newConvo);
     });
   }, []);
+
+  useEffect(()=>{
+    socket.on("new_message",({event})=>{
+      console.log("message new")
+      console.log(event)
+    })
+  },[])
 
   const [contacts, setContacts] = useState([]);
 
@@ -164,11 +172,8 @@ const Chat = ({
           </Grid>
           <Divider />
           <List>
-            {conversation.map((conversations) => {
-              conversations.recipients = conversations.recipients.filter(
-                (recipient) => recipient._id !== auth.user._id
-              );
-            })}
+            
+            
 
             {!conversation.length ? (
               <h1>No Contacts Found</h1>
@@ -178,13 +183,13 @@ const Chat = ({
                 <ListItem
                   button
                   onClick={(e) => fun({ chatid: x._id })}
-                  key={x.recipients[0].name}
+                  key={x.recipients[0].name===auth.user.name ?  x.recipients[1].name:x.recipients[0].name}
                 >
                   <ListItemIcon>
                     <PersonAddIcon />
                   </ListItemIcon>
-                  <ListItemText primary={x.recipients[0].name}>
-                    {x.recipients[0].name}
+                  <ListItemText primary={x.recipients[0].name===auth.user.name ?  x.recipients[1].name:x.recipients[0].name}>
+                    {x.recipients[0].name===auth.user.name ?  x.recipients[1].name:x.recipients[0].name}
                   </ListItemText>
                 </ListItem>
               ))

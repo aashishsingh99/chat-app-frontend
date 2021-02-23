@@ -5,7 +5,7 @@ import { ADD_CONV } from "./types";
 const io = require("socket.io-client");
 
 // Register User
-export const new_conver_state = ({ newConvo }) => async (dispatch) => {
+export const new_conver_state = ( newConvo ) => async (dispatch) => {
 
   try {
     console.log("DDDDDDDDDDD");
