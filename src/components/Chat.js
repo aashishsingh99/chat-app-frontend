@@ -24,6 +24,7 @@ import { Add_Conv } from "../actions/Add_Conv";
 import { newConversation } from "../actions/newConversation";
 import { Get_Events } from "../actions/Get_Events";
 import { postMessage } from "../actions/postMessage";
+import { new_conver_state } from "../actions/new_conver_state";
 const io = require("socket.io-client");
 const ENDPOINT = "http://localhost:5000";
 let socket;
@@ -63,6 +64,7 @@ const Chat = ({
   currentconversation,
   postMessage,
   currentevents,
+  new_conver_state,
 }) => {
   const fun = ({ chatid }) => {
     console.log("fun");
@@ -81,8 +83,9 @@ const Chat = ({
     socket = io(ENDPOINT, { transports: ["websocket", "polling"] });
 
     if (auth.user.name !== undefined && conversation.length > 0) {
-      console.log("AAAAAAAA");
-      socket.emit("join", { user_name, conversation }, (error) => {
+      const me = auth.user.name;
+      console.log("AAAAAAAA", me);
+      socket.emit("join", { me, conversation }, (error) => {
         if (error) {
           alert(error);
         }
@@ -91,10 +94,10 @@ const Chat = ({
   }, [ENDPOINT, auth, conversation]);
 
   useEffect(() => {
-    socket.on("emit_message", ({ text }) => {
-      //console.log(text);
-      // console.log(text, "socket newMessage");
-      // save in state
+    socket.on("newConversation", ({ newConvo }) => {
+      console.log("YES YAAR");
+      console.log(newConvo, "new conversation");
+      new_conver_state(newConvo);
     });
   }, []);
 
@@ -109,6 +112,7 @@ const Chat = ({
     setContacts((con) => [...con, temp2]);
     //search.value="";
     document.getElementById("outlined-basic-email").value = "";
+
     //add conv
     Add_Conv({ user_name: temp2 });
 
@@ -187,54 +191,42 @@ const Chat = ({
             )}
           </List>
         </Grid>
+
         <Grid item xs={9}>
           <List className={classes.messageArea}>
-            <ListItem key="1">
-              <Grid container>
-                <Grid item xs={12}>
-                  <ListItemText
-                    align="right"
-                    primary="Hey man, What's up ?"
-                  ></ListItemText>
-                </Grid>
-                <Grid item xs={12}>
-                  <ListItemText align="right" secondary="09:30"></ListItemText>
-                </Grid>
-              </Grid>
-            </ListItem>
-            <ListItem key="2">
-              <Grid container>
-                <Grid item xs={12}>
-                  <ListItemText
-                    align="left"
-                    primary="Hey, Iam Good! What about you ?"
-                  ></ListItemText>
-                </Grid>
-                <Grid item xs={12}>
-                  <ListItemText align="left" secondary="09:31"></ListItemText>
-                </Grid>
-              </Grid>
-            </ListItem>
-            <ListItem key="3">
-              <Grid container>
-                <Grid item xs={12}>
-                  <ListItemText
-                    align="right"
-                    primary="Cool. i am good, let's catch up!"
-                  ></ListItemText>
-                </Grid>
-                <Grid item xs={12}>
-                  <ListItemText align="right" secondary="10:30"></ListItemText>
-                </Grid>
-              </Grid>
-            </ListItem>
+            {currentevents.length &&
+              currentevents.map((curr) => (
+                <ListItem>
+                  <Grid container>
+                    <Grid item xs={12}>
+                      {curr.sender === auth.user._id && (
+                        <ListItemText
+                          align="right"
+                          primary={curr.text}
+                          secondary={curr.date.substr(11, 5)}
+                        ></ListItemText>
+                      )}
+                      {curr.sender !== auth.user._id && (
+                        <ListItemText
+                          align="left"
+                          primary={curr.text}
+                          secondary={curr.date.substr(11, 5)}
+                        ></ListItemText>
+                      )}
+                    </Grid>
+                    <Grid item xs={12}>
+                      <ListItemText align="right"></ListItemText>
+                    </Grid>
+                  </Grid>
+                </ListItem>
+              ))}
           </List>
           <Divider />
           <Grid container style={{ padding: "20px" }}>
             <Grid item xs={11}>
               <TextField
                 id="outlined-basic-email"
-                label="Type Something"
+                label="Write a Message"
                 fullWidth
                 onChange={(e) => setmessage(e.target.value)}
               />
@@ -245,7 +237,7 @@ const Chat = ({
                   postMessage({
                     text: message,
                     chatRoomId: currentconversation._id,
-                    messageId:currentevents.length+1,
+                    messageId: currentevents.length + 1,
                   })
                 }
                 color="primary"
@@ -268,7 +260,8 @@ Chat.propTypes = {
   Get_Events: PropTypes.func.isRequired,
   currentconversation: PropTypes.object.isRequired,
   postMessage: PropTypes.func.isRequired,
-  currentevents:PropTypes.object.isRequired,
+  currentevents: PropTypes.object.isRequired,
+  new_conver_state: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => ({
   conversation: state.auth.conversation,
@@ -283,4 +276,5 @@ export default connect(mapStateToProps, {
   newConversation,
   Get_Events,
   postMessage,
+  new_conver_state,
 })(Chat);

@@ -29,3 +29,4 @@ export const ADD_CONV="ADD_CONV";
 export const CURRENT_CONV="CURRENT_CONV";
 export const GET_EVENTS="GET_EVENTS";
 export const ADDMESSAGE="ADDMESSAGE";
+export const CONV_STATE="CONV_STATE";
