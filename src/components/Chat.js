@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -11,6 +11,8 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import Avatar from "@material-ui/core/Avatar";
 import Fab from "@material-ui/core/Fab";
 import SendIcon from "@material-ui/icons/Send";
@@ -27,6 +29,7 @@ import { postMessage } from "../actions/postMessage";
 import { State_conversation } from "../actions/State_conversation";
 import { new_conver_state } from "../actions/new_conver_state";
 import socket from "../socketConfig";
+
 
 
 
@@ -191,6 +194,7 @@ const Chat = ({
             ) : (
               conversation.map((x) => (
                 // console.log(x._id)
+                <Fragment>
                 <ListItem
                   button
                   onClick={(e) => fun({ chatid: x._id })}
@@ -203,6 +207,7 @@ const Chat = ({
                     {x.recipients[0].name===auth.user.name ?  x.recipients[1].name:x.recipients[0].name}
                   </ListItemText>
                 </ListItem>
+                </Fragment>
               ))
             )}
           </List>
@@ -212,29 +217,51 @@ const Chat = ({
           <List className={classes.messageArea}>
             {currentevents.length &&
               currentevents.map((curr) => (
+              <Fragment> 
+                <Grid>
+                
+                
                 <ListItem>
                   <Grid container>
                     <Grid item xs={12}>
-                      {curr.sender === auth.user._id && (
-                        <ListItemText
-                          align="right"
-                          primary={curr.text}
-                          secondary={curr.date.substr(11, 5)}
-                        ></ListItemText>
-                      )}
                       {curr.sender !== auth.user._id && (
                         <ListItemText
                           align="left"
+                          
+                          
                           primary={curr.text}
+                          
                           secondary={curr.date.substr(11, 5)}
+                         
                         ></ListItemText>
                       )}
+                      {curr.sender === auth.user._id && (
+                        <Fragment>
+                          <Grid container>
+                            
+                        <Grid item xs={11}>
+                        <ListItemText
+                          align="right"
+                          primary={curr.text }
+                          secondary={curr.date.substr(11, 5)}
+                        ></ListItemText>
+                        </Grid>
+                        <Grid item xs={1}>
+                        <DeleteIcon style={{"position":"absolute","top":"10px"}}></DeleteIcon>
+                        <EditIcon style={{"position":"absolute","top":"10px","right":"25px"}}></EditIcon>
+                          </Grid>
+                        </Grid>
+                        </Fragment>
+                      )}
+
                     </Grid>
                     <Grid item xs={12}>
                       <ListItemText align="right"></ListItemText>
                     </Grid>
                   </Grid>
                 </ListItem>
+                </Grid>
+                </Fragment>
               ))}
           </List>
           <Divider />
