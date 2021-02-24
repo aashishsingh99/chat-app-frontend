@@ -17,7 +17,7 @@ export const Get_Events = ({ chatRoomId }) => async (dispatch) => {
     console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     const res = await axios.post("/api/event/getEvents", body, config);
     console.log("calling reducer");
-
+    console.log(res);
     dispatch({
       type: GET_EVENTS,
       payload: res.data,

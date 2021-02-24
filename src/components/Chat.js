@@ -28,6 +28,7 @@ import { Get_Events } from "../actions/Get_Events";
 import { postMessage } from "../actions/postMessage";
 import { State_conversation } from "../actions/State_conversation";
 import { new_conver_state } from "../actions/new_conver_state";
+import {DeleteMessage} from "../actions/DeleteMessage";
 import socket from "../socketConfig";
 
 
@@ -71,6 +72,7 @@ const Chat = ({
   currentevents,
   new_conver_state,
   State_conversation,
+  DeleteMessage,
 }) => {
   const fun = ({ chatid }) => {
     console.log("fun");
@@ -80,6 +82,19 @@ const Chat = ({
     console.log(Date.now);
     Get_Events({ chatRoomId: chatid });
   };
+  const fun2 = ({curr}) => {
+    console.log("inside fun222222!")
+      DeleteMessage({
+                            text: "This message is deleted!",
+                            chatRoomId: currentconversation._id,
+                            messageId: curr.messageId,
+                          });
+                          console.log("after delete msg")
+
+    Get_Events({ chatRoomId: currentconversation._id });
+  };
+  
+
   useEffect(() => {
     console.log("i am useeffect");
     //const name = auth.user.name;
@@ -247,7 +262,17 @@ const Chat = ({
                         ></ListItemText>
                         </Grid>
                         <Grid item xs={1}>
-                        <DeleteIcon style={{"position":"absolute","top":"10px"}}></DeleteIcon>
+                        <DeleteIcon 
+                        // onClick={(e) =>
+                        //   DeleteMessage({
+                        //     text: "This message is deleted!",
+                        //     chatRoomId: currentconversation._id,
+                        //     messageId: curr.messageId,
+                        //   })
+                        // }
+                        //onClick={(e) => fun({ chatid: x._id })}
+                        onClick={(e)=>fun2({curr:curr})}
+                        style={{"position":"absolute","top":"10px"}}></DeleteIcon>
                         <EditIcon style={{"position":"absolute","top":"10px","right":"25px"}}></EditIcon>
                           </Grid>
                         </Grid>
@@ -305,6 +330,7 @@ Chat.propTypes = {
   postMessage: PropTypes.func.isRequired,
   currentevents: PropTypes.object.isRequired,
   new_conver_state: PropTypes.func.isRequired,
+  
 };
 const mapStateToProps = (state) => ({
   conversation: state.auth.conversation,
@@ -321,4 +347,5 @@ export default connect(mapStateToProps, {
   postMessage,
   new_conver_state,
   State_conversation,
+  DeleteMessage,
 })(Chat);

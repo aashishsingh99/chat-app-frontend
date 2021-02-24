@@ -14,6 +14,7 @@ import {
   ADDMESSAGE,
   CONV_STATE,
   STATE_CONVERSATION,
+  DELETE_MESSAGE,
 } from "../actions/types";
 
 const initialState = {
@@ -47,6 +48,26 @@ function authReducer(state = initialState, action) {
         loading: false,
         currentevents: [...state.currentevents,payload]
       };
+    } 
+    case DELETE_MESSAGE: {
+      
+        
+        //currentevents: [...state.currentevents,payload]
+        console.log("message deleted!")
+        console.log(payload.messageId,"this is message id")
+        console.log(payload,"thiss is paylad")
+        console.log(state.currentevents[payload.messageId - 1])
+        state.currentevents[payload.messageId - 1] = payload;
+        console.log(state.currentevents[payload.messageId - 1])
+        return {
+          ...state,
+
+          
+          
+        };
+
+
+      
     }  
     case STATE_CONVERSATION: {
       return {
