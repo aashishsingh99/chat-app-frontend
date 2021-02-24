@@ -12,7 +12,7 @@ export const DeleteMessage = ({ text, chatRoomId,messageId }) => async (dispatch
   };
   console.log(chatRoomId);
   console.log(messageId);
-  let type = "DELETE";
+  let type = "CREATE";
   
   const body = JSON.stringify({ chatRoomId, type, messageId, text });
   try {

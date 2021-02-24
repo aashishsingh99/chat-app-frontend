@@ -29,6 +29,7 @@ import { postMessage } from "../actions/postMessage";
 import { State_conversation } from "../actions/State_conversation";
 import { new_conver_state } from "../actions/new_conver_state";
 import {DeleteMessage} from "../actions/DeleteMessage";
+import {delete_message_state} from "../actions/delete_message_state";
 import socket from "../socketConfig";
 
 
@@ -73,6 +74,7 @@ const Chat = ({
   new_conver_state,
   State_conversation,
   DeleteMessage,
+  delete_message_state,
 }) => {
   const fun = ({ chatid }) => {
     console.log("fun");
@@ -135,6 +137,20 @@ const Chat = ({
       }
       
       
+    })
+  },[currentconversation])
+  useEffect(()=>{
+    socket.on("delete_message",({event})=>{
+      console.log("chat component HEYY")
+      const text = event.text 
+      const chatRoomId=event.chatRoomId
+      const messageId=event.messageId
+      if (currentconversation && currentconversation._id === event.chatRoomId) {
+         delete_message_state({event});
+      } else {
+        //send notification of new event
+      }
+    
     })
   },[currentconversation])
 
@@ -348,4 +364,5 @@ export default connect(mapStateToProps, {
   new_conver_state,
   State_conversation,
   DeleteMessage,
+  delete_message_state,
 })(Chat);
