@@ -29,7 +29,9 @@ import { postMessage } from "../actions/postMessage";
 import { State_conversation } from "../actions/State_conversation";
 import { new_conver_state } from "../actions/new_conver_state";
 import { DeleteMessage } from "../actions/DeleteMessage";
+import { EditMessage } from "../actions/EditMessage";
 import { delete_message_state } from "../actions/delete_message_state";
+import { edit_message_state } from "../actions/edit_message_state";
 import socket from "../socketConfig";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -76,8 +78,10 @@ const Chat = ({
   State_conversation,
   DeleteMessage,
   delete_message_state,
+  edit_message_state,
+  EditMessage,
 }) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -86,7 +90,7 @@ const Chat = ({
   const handleClose = () => {
     setOpen(false);
   }
-  
+  const [edit_curr,setedit_curr]=useState({})
   const fun = ({ chatid }) => {
     console.log("fun");
     console.log(chatid);
@@ -106,9 +110,19 @@ const Chat = ({
 
     Get_Events({ chatRoomId: currentconversation._id });
   };
+  //let edit_msg="";
+  
+  
+  
   const fun3 = ({ curr }) => {
     console.log("inside fun333333!");
-    alert();
+    handleClickOpen();
+    console.log("curr")
+    console.log(curr)
+    setedit_curr(curr);
+    console.log("edit_curr",edit_curr);
+    
+  
   
 
     // DeleteMessage({
@@ -120,6 +134,18 @@ const Chat = ({
 
     // Get_Events({ chatRoomId: currentconversation._id });
   };
+  const handleEditMessage=()=>{
+    console.log("editmessage",editmessage)
+    console.log(edit_curr)
+    handleClose()
+    const text=edit_curr.text 
+    const chatRoomId=edit_curr.chatRoomId
+    const messageId=edit_curr.messageId
+    const updatedText=editmessage;
+    console.log("everything")
+    console.log(text,chatRoomId,messageId,updatedText);
+    EditMessage({text,chatRoomId,messageId,updatedText});
+}
 
   useEffect(() => {
     console.log("i am useeffect");
@@ -173,11 +199,27 @@ const Chat = ({
     });
   }, [currentconversation]);
 
+  useEffect(() => {
+    socket.on("edit_message", ({ event }) => {
+      console.log("chat component HEYY eidting");
+      const text = event.text;
+      const chatRoomId = event.chatRoomId;
+      const messageId = event.messageId;
+      console.log("everything in edit",text,chatRoomId,messageId)
+      if (currentconversation && currentconversation._id === event.chatRoomId) {
+        edit_message_state( event );
+      } else {
+        //send notification of new event
+      }
+    });
+  }, [currentconversation]);
+
   const [contacts, setContacts] = useState([]);
 
   const [temp2, settemp2] = useState("");
+  const [editmessage,seteditmessage] = useState("");
   const [message, setmessage] = useState("");
-
+  
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -364,6 +406,38 @@ const Chat = ({
           </Grid>
         </Grid>
       </Grid>
+
+      <div>
+      
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Edit</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Edit your message here:
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Type here ..."
+            value={editmessage}
+            onChange={(e) => seteditmessage(e.target.value)}
+            type="text"
+            fullWidth
+          />
+  
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleEditMessage} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+
     </div>
   );
 };
@@ -377,6 +451,8 @@ Chat.propTypes = {
   postMessage: PropTypes.func.isRequired,
   currentevents: PropTypes.object.isRequired,
   new_conver_state: PropTypes.func.isRequired,
+  EditMessage: PropTypes.func.isRequired,
+  edit_message_state:PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => ({
   conversation: state.auth.conversation,
@@ -395,4 +471,7 @@ export default connect(mapStateToProps, {
   State_conversation,
   DeleteMessage,
   delete_message_state,
+  edit_message_state,
+  EditMessage,
+  
 })(Chat);

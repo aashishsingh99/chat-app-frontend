@@ -16,6 +16,8 @@ import {
   STATE_CONVERSATION,
   DELETE_MESSAGE,
   STATE_DELETE,
+  EDIT_MESSAGE,
+  STATE_EDIT,
 } from "../actions/types";
 
 const initialState = {
@@ -63,7 +65,19 @@ function authReducer(state = initialState, action) {
         return {
           ...state, 
         }; 
-    }  
+    } 
+    case EDIT_MESSAGE: {
+      //currentevents: [...state.currentevents,payload]
+      console.log("message edited!")
+      console.log(payload.messageId,"this is message id")
+      console.log(payload,"thiss is paylad")
+      console.log(state.currentevents[payload.messageId - 1])
+      state.currentevents[payload.messageId - 1] = payload;
+      console.log(state.currentevents[payload.messageId - 1])
+      return {
+        ...state, 
+      }; 
+  }   
     case STATE_CONVERSATION: {
       return {
         ...state,
@@ -74,6 +88,17 @@ function authReducer(state = initialState, action) {
     }
     case STATE_DELETE: {
       console.log("message deleted!")
+      console.log(payload.messageId,"this is message id")
+      console.log(payload,"thiss is paylad")
+      console.log(state.currentevents[payload.messageId - 1])
+      state.currentevents[payload.messageId - 1] = payload;
+      console.log(state.currentevents[payload.messageId - 1])
+      return {
+        ...state, 
+      }; 
+    }
+    case STATE_EDIT: {
+      console.log("message edited!")
       console.log(payload.messageId,"this is message id")
       console.log(payload,"thiss is paylad")
       console.log(state.currentevents[payload.messageId - 1])
