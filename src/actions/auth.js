@@ -1,4 +1,5 @@
 import axios from "axios";
+
 import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
@@ -106,6 +107,7 @@ export const login = (formData) => async (dispatch) => {
 //logout
 export const logout = () => (dispatch) => {
   console.log("logout");
+  
   dispatch({ type: LOGOUT });
 };
 

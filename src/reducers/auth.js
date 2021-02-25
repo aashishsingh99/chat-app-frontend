@@ -18,6 +18,9 @@ import {
   STATE_DELETE,
   EDIT_MESSAGE,
   STATE_EDIT,
+  SHOW_ONLINE,
+  SET_TYPING,
+  CLEAR_TYPING,
 } from "../actions/types";
 
 const initialState = {
@@ -27,9 +30,11 @@ const initialState = {
   user: null,
   category: null,
   conversation: [],
-  currentconversation: {},
+  currentconversation:null,
   currentevents: [],
   dict:{},
+  status:null,
+  typing:null,
 };
 
 function authReducer(state = initialState, action) {
@@ -50,6 +55,14 @@ function authReducer(state = initialState, action) {
         isAuthenticated: true,
         loading: false,
         currentevents: [...state.currentevents,payload]
+      };
+    } 
+    case SHOW_ONLINE: {
+      return {
+        ...state,
+        isAuthenticated: true,
+        status:payload,
+       
       };
     } 
     case DELETE_MESSAGE: {
@@ -158,7 +171,16 @@ function authReducer(state = initialState, action) {
         conversation: [],
         loading: false,
       };
-
+      case SET_TYPING:
+        return{
+          ...state,
+          typing:payload
+        }
+      case CLEAR_TYPING:
+        return{
+          ...state,
+          typing:null
+        }
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
       localStorage.setItem("token", payload.token);

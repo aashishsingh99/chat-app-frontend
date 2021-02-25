@@ -32,12 +32,17 @@ import { DeleteMessage } from "../actions/DeleteMessage";
 import { EditMessage } from "../actions/EditMessage";
 import { delete_message_state } from "../actions/delete_message_state";
 import { edit_message_state } from "../actions/edit_message_state";
+import { Show_Online } from "../actions/Show_Online";
+import {setTyping} from "../actions/setTyping";
+import {clearTyping} from "../actions/clearTyping";
 import socket from "../socketConfig";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles({
   root: {
@@ -61,6 +66,28 @@ const useStyles = makeStyles({
     backgroundColor: "black",
     color: "white",
   },
+  icon: {
+
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
+  hoverMessage: {
+    padding: 10,
+    marginRight: "10%",
+    marginTop: "1%",
+    background: "light",
+
+    "&:hover": {
+      backgroundColor: "#f7f5f5",
+    },
+  },
+  online: {
+    height: 15,
+    width: 15,
+    color: "green",
+    margin: 2,
+  },
 });
 
 const Chat = ({
@@ -80,9 +107,15 @@ const Chat = ({
   delete_message_state,
   edit_message_state,
   EditMessage,
+  Show_Online,
+  status,
+  setTyping,
+  clearTyping,
+  typing,
+
 }) => {
   const [open, setOpen] = useState(false);
-
+  const [message, setmessage] = useState("");
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -90,7 +123,7 @@ const Chat = ({
   const handleClose = () => {
     setOpen(false);
   }
-  const [edit_curr,setedit_curr]=useState({})
+  const [edit_curr, setedit_curr] = useState({})
   const fun = ({ chatid }) => {
     console.log("fun");
     console.log(chatid);
@@ -98,7 +131,12 @@ const Chat = ({
     console.log("calling get function sakshiiiiii");
     console.log(Date.now);
     Get_Events({ chatRoomId: chatid });
-  };
+    Show_Online({ chat_id: chatid });
+
+  }
+  //   useEffect(() => {
+  //     Show_Online({chat_id:chatid});
+  // },[status]);
   const fun2 = ({ curr }) => {
     console.log("inside fun222222!");
     DeleteMessage({
@@ -111,19 +149,19 @@ const Chat = ({
     Get_Events({ chatRoomId: currentconversation._id });
   };
   //let edit_msg="";
-  
-  
-  
+
+
+
   const fun3 = ({ curr }) => {
     console.log("inside fun333333!");
     handleClickOpen();
     console.log("curr")
     console.log(curr)
     setedit_curr(curr);
-    console.log("edit_curr",edit_curr);
-    
-  
-  
+    console.log("edit_curr", edit_curr);
+
+
+
 
     // DeleteMessage({
     //   text: "This message is deleted!",
@@ -134,18 +172,61 @@ const Chat = ({
 
     // Get_Events({ chatRoomId: currentconversation._id });
   };
-  const handleEditMessage=()=>{
-    console.log("editmessage",editmessage)
+  // useEffect(() => {
+  //   console.log("i am in useeffect typing");
+
+  //   //const name = auth.user.name;
+  //   // socket.on("typing", ({}) => {
+  //   //   console.log("Yes he is typing");
+
+  //   // });
+  //   socket.on("typing", () => {
+  //     console.log("on socket listening");
+  //   })
+
+  // }, [message]);
+  useEffect(() => {
+    socket.on('showTyping', ({ chat_typing_id }) => {
+      // I will call it and set Timeout and call someting to clear typing
+
+      console.log('typing');
+      setTyping(chat_typing_id);
+      setTimeout(() => {
+        clearTyping();
+      }, 3000);
+    });
+  }, []);
+  const fun4 = ({ e }) => {
+    if(currentconversation!==null){
+    let chat_typing_id=currentconversation._id
+    socket.emit("typing",({chat_typing_id}));
+    }
+    //UserSocket[req.user.name].in(chatRoomId).emit("edit_message", { event:event2 });
+    //console.log("afteer emit typing")
+    setmessage(e.target.value);
+
+    //console.log(e.target.value,"e inside fun4");
+    //socket.to(currentconversation._id).emit("typing","useris typing");
+
+    // socket.emit("typing", {  }, (error) => {
+    //   console.log("emitting typing",({}));
+    //   if (error) {
+    //     alert(error);
+    //   }
+    // });
+  }
+  const handleEditMessage = () => {
+    console.log("editmessage", editmessage)
     console.log(edit_curr)
     handleClose()
-    const text=edit_curr.text 
-    const chatRoomId=edit_curr.chatRoomId
-    const messageId=edit_curr.messageId
-    const updatedText=editmessage;
+    const text = edit_curr.text
+    const chatRoomId = edit_curr.chatRoomId
+    const messageId = edit_curr.messageId
+    const updatedText = editmessage;
     console.log("everything")
-    console.log(text,chatRoomId,messageId,updatedText);
-    EditMessage({text,chatRoomId,messageId,updatedText});
-}
+    console.log(text, chatRoomId, messageId, updatedText);
+    EditMessage({ text, chatRoomId, messageId, updatedText });
+  }
 
   useEffect(() => {
     console.log("i am useeffect");
@@ -205,9 +286,9 @@ const Chat = ({
       const text = event.text;
       const chatRoomId = event.chatRoomId;
       const messageId = event.messageId;
-      console.log("everything in edit",text,chatRoomId,messageId)
+      console.log("everything in edit", text, chatRoomId, messageId)
       if (currentconversation && currentconversation._id === event.chatRoomId) {
-        edit_message_state( event );
+        edit_message_state(event);
       } else {
         //send notification of new event
       }
@@ -217,9 +298,9 @@ const Chat = ({
   const [contacts, setContacts] = useState([]);
 
   const [temp2, settemp2] = useState("");
-  const [editmessage,seteditmessage] = useState("");
-  const [message, setmessage] = useState("");
-  
+  const [editmessage, seteditmessage] = useState("");
+  // const [message, setmessage] = useState("");
+
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -248,25 +329,31 @@ const Chat = ({
       </Grid>
       <Grid container component={Paper} className={classes.chatSection}>
         <Grid item xs={3} className={classes.borderRight500}>
-          <List>
+
+          <List >
             <ListItem button key={user_name}>
-              <ListItemIcon>
+              <ListItemIcon >
                 <AccountCircleIcon />
               </ListItemIcon>
-              <ListItemText primary={user_name}></ListItemText>
+              {/* <ListItemText primary={user_name} style={{"font":"50px"}}></ListItemText> */}
+              <h2>{user_name}</h2> <FiberManualRecordIcon className={classes.online}></FiberManualRecordIcon>
             </ListItem>
           </List>
+
           <Divider />
           <Grid item xs={12} style={{ padding: "10px" }}>
             <TextField
               name="search"
               id="outlined-basic-email"
-              label="Enter User_Name"
+              label="Enter User Name..."
               variant="outlined"
               onChange={(e) => settemp2(e.target.value)}
               fullWidth
             />
-            <Button
+
+            
+
+            <Button 
               type="submit"
               variant="contained"
               className={classes.home}
@@ -275,168 +362,187 @@ const Chat = ({
             >
               Search
             </Button>
+
           </Grid>
           <Divider />
-          <List>
+          <List >
             {!conversation.length ? (
               <h1>No Contacts Found</h1>
             ) : (
-              conversation.map((x) => (
-                // console.log(x._id)
-                <Fragment>
-                  <ListItem
-                    button
-                    onClick={(e) => fun({ chatid: x._id })}
-                    key={
-                      x.recipients[0].name === auth.user.name
-                        ? x.recipients[1].name
-                        : x.recipients[0].name
-                    }
-                  >
-                    <ListItemIcon>
-                      <PersonAddIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
+                conversation.map((x) => (
+                  // console.log(x._id)
+                  <Fragment>
+                    <ListItem
+                      button
+                      onClick={(e) => fun({ chatid: x._id })}
+                      key={
                         x.recipients[0].name === auth.user.name
                           ? x.recipients[1].name
                           : x.recipients[0].name
                       }
                     >
-                      {x.recipients[0].name === auth.user.name
-                        ? x.recipients[1].name
-                        : x.recipients[0].name}
-                    </ListItemText>
-                  </ListItem>
-                </Fragment>
-              ))
-            )}
+                      <ListItemIcon>
+                        <PersonAddIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          x.recipients[0].name === auth.user.name
+                            ? x.recipients[1].name
+                            : x.recipients[0].name
+                        }
+                      >
+                        {x.recipients[0].name === auth.user.name
+                          ? x.recipients[1].name
+                          : x.recipients[0].name}
+                      </ListItemText>
+                    </ListItem>
+                  </Fragment>
+                ))
+              )}
           </List>
         </Grid>
 
         <Grid item xs={9}>
-          <List className={classes.messageArea}>
-            {currentevents.length &&
-              currentevents.map((curr) => (
-                <Fragment>
-                  <Grid>
-                    <ListItem>
-                      <Grid container>
-                        <Grid item xs={12}>
-                          {curr.sender !== auth.user._id && (
-                            <ListItemText
-                              align="left"
-                              primary={curr.text}
-                              secondary={curr.date.substr(11, 5)}
-                            ></ListItemText>
-                          )}
-                          {curr.sender === auth.user._id && (
-                            <Fragment>
-                              <Grid container>
-                                <Grid item xs={11}>
-                                  <ListItemText
-                                    align="right"
-                                    primary={curr.text}
-                                    secondary={curr.date.substr(11, 5)}
-                                  ></ListItemText>
-                                </Grid>
-                                <Grid item xs={1}>
-                                  <DeleteIcon
-                                    // onClick={(e) =>
-                                    //   DeleteMessage({
-                                    //     text: "This message is deleted!",
-                                    //     chatRoomId: currentconversation._id,
-                                    //     messageId: curr.messageId,
-                                    //   })
-                                    // }
-                                    //onClick={(e) => fun({ chatid: x._id })}
-                                    onClick={(e) => fun2({ curr: curr })}
-                                    style={{
-                                      position: "absolute",
-                                      top: "10px",
-                                    }}
-                                  ></DeleteIcon>
-                                  <EditIcon
-                                    style={{
-                                      position: "absolute",
-                                      top: "10px",
-                                      right: "25px",
-                                    }}
-                                    onClick={(e) => fun3({ curr: curr })}
-                                  ></EditIcon>
-                                </Grid>
-                              </Grid>
-                            </Fragment>
-                          )}
-                        </Grid>
-                        <Grid item xs={12}>
-                          <ListItemText align="right"></ListItemText>
-                        </Grid>
-                      </Grid>
-                    </ListItem>
-                  </Grid>
-                </Fragment>
-              ))}
-          </List>
-          <Divider />
-          <Grid container style={{ padding: "20px" }}>
-            <Grid item xs={11}>
-              <TextField
-                id="outlined-basic-email"
-                label="Write a Message"
-                fullWidth
-                onChange={(e) => setmessage(e.target.value)}
-              />
-            </Grid>
-            <Grid xs={1} align="right">
-              <Fab
-                onClick={(e) =>
-                  postMessage({
-                    text: message,
-                    chatRoomId: currentconversation._id,
-                    messageId: currentevents.length + 1,
-                  })
-                }
-                color="primary"
-                aria-label="add"
-              >
-                <SendIcon />
-              </Fab>
-            </Grid>
+          <Grid style={{ "background": "#D3D3D3" }}>
+            <h2>{currentconversation && currentconversation.recipients ? (currentconversation.recipients[1].name===auth.user.name ?currentconversation.recipients[0].name : currentconversation.recipients[1].name) : ""}</h2>
+            {console.log(currentconversation, "curr_CONVERSATION")}
+            {currentconversation !== null ? <p>{status ? "Online" : "Offline"}<FiberManualRecordIcon className={classes.online} style={{ "position": "relative", "top": "5px" }}></FiberManualRecordIcon></p> : ""}
+            {currentconversation?currentconversation._id === typing && <span>typing...</span>:""}
           </Grid>
+          <Grid >
+            <List className={classes.messageArea}>
+              {currentevents &&
+                currentevents.map((curr) => (
+                  <Fragment >
+                    <Grid className={classes.hoverMessage}>
+                      <ListItem>
+                        <Grid container>
+                          <Grid item xs={12}>
+                            {curr.sender !== auth.user._id && (
+                              <ListItemText
+                                align="left"
+                                primary={curr.text}
+                                secondary={curr.date.substr(11, 5)}
+                              ></ListItemText>
+                            )}
+                            {curr.sender === auth.user._id && (
+                              <Fragment>
+                                <Grid container>
+                                  <Grid item xs={11}>
+                                    <ListItemText
+                                      align="right"
+                                      primary={curr.text}
+                                      secondary={curr.date.substr(11, 5)}
+                                    ></ListItemText>
+                                  </Grid>
+                                  <Grid item xs={1}>
+                                    <DeleteIcon className={classes.icon}
+                                      // onClick={(e) =>
+                                      //   DeleteMessage({
+                                      //     text: "This message is deleted!",
+                                      //     chatRoomId: currentconversation._id,
+                                      //     messageId: curr.messageId,
+                                      //   })
+                                      // }
+                                      //onClick={(e) => fun({ chatid: x._id })}
+                                      onClick={(e) => fun2({ curr: curr })}
+                                      style={{
+                                        position: "absolute",
+                                        top: "10px",
+                                      }}
+                                    ></DeleteIcon>
+                                    <EditIcon className={classes.icon}
+                                      style={{
+                                        position: "absolute",
+                                        top: "10px",
+                                        right: "25px",
+                                      }}
+                                      onClick={(e) => fun3({ curr: curr })}
+                                    ></EditIcon>
+                                  </Grid>
+                                </Grid>
+                              </Fragment>
+                            )}
+                          </Grid>
+                          <Grid item xs={12}>
+                            <ListItemText align="right"></ListItemText>
+                          </Grid>
+                        </Grid>
+                      </ListItem>
+                    </Grid>
+                  </Fragment>
+                ))}
+            </List>
+          </Grid>
+          <Divider />
+          {currentconversation !== null ?
+            <Grid container style={{ padding: "20px" }}>
+              <Grid item xs={11}>
+
+                <TextField
+                  id="outlined-basic-email"
+                  label="Write a Message"
+                  fullWidth
+                  onChange={(e) => fun4({ e })}
+
+                />
+
+              </Grid>
+              <Grid xs={1} align="right">
+
+                <Fab style={{ "background": "black" }}
+                  onClick={(e) =>
+                    postMessage({
+                      text: message,
+                      chatRoomId: currentconversation._id,
+                      messageId: currentevents.length + 1,
+                    })
+                  }
+                  color="primary"
+                  aria-label="add"
+                >
+                  <SendIcon />
+                </Fab>
+              </Grid>
+            </Grid>
+            : ""
+          }
+
         </Grid>
       </Grid>
 
       <div>
-      
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Edit</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Edit your message here:
+
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+          <DialogTitle id="form-dialog-title">Edit</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Edit your message here:
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Type here ..."
-            value={editmessage}
-            onChange={(e) => seteditmessage(e.target.value)}
-            type="text"
-            fullWidth
-          />
-  
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
+
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Type here ..."
+              value={editmessage}
+              onChange={(e) => seteditmessage(e.target.value)}
+              type="text"
+              fullWidth
+            />
+
+
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
           </Button>
-          <Button onClick={handleEditMessage} color="primary">
-            Submit
+            <Button onClick={handleEditMessage} color="primary">
+              Submit
           </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+          </DialogActions>
+        </Dialog>
+      </div>
 
     </div>
   );
@@ -452,13 +558,19 @@ Chat.propTypes = {
   currentevents: PropTypes.object.isRequired,
   new_conver_state: PropTypes.func.isRequired,
   EditMessage: PropTypes.func.isRequired,
-  edit_message_state:PropTypes.func.isRequired,
+  edit_message_state: PropTypes.func.isRequired,
+  Show_Online: PropTypes.func.isRequired,
+  status: PropTypes.func.isRequired,
+  setTyping: PropTypes.func.isRequired,
+  clearTyping: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => ({
   conversation: state.auth.conversation,
   auth: state.auth,
   currentconversation: state.auth.currentconversation,
   currentevents: state.auth.currentevents,
+  status: state.auth.status,
+  typing:state.auth.typing,
 });
 
 export default connect(mapStateToProps, {
@@ -473,5 +585,9 @@ export default connect(mapStateToProps, {
   delete_message_state,
   edit_message_state,
   EditMessage,
-  
-})(Chat);
+  Show_Online,
+  setTyping,
+  clearTyping,
+
+})
+  (Chat);
