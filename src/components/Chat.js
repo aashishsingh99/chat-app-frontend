@@ -72,6 +72,11 @@ const useStyles = makeStyles({
       cursor: "pointer",
     },
   },
+  accounticon: {
+
+    height:50,
+    width:50
+  },
   hoverMessage: {
     padding: 10,
     marginRight: "10%",
@@ -321,7 +326,7 @@ const Chat = ({
   const classes = useStyles();
 
   return (
-    <div>
+    <div style={{"padding-top":"20px"}}>
       <Grid container>
         <Grid item xs={12}>
           <Typography variant="h5" className="header-message"></Typography>
@@ -333,7 +338,7 @@ const Chat = ({
           <List >
             <ListItem button key={user_name}>
               <ListItemIcon >
-                <AccountCircleIcon />
+                <AccountCircleIcon className={classes.accounticon}/>
               </ListItemIcon>
               {/* <ListItemText primary={user_name} style={{"font":"50px"}}></ListItemText> */}
               <h2>{user_name}</h2> <FiberManualRecordIcon className={classes.online}></FiberManualRecordIcon>
@@ -353,7 +358,7 @@ const Chat = ({
 
             
 
-            <Button 
+            {/* <Button 
               type="submit"
               variant="contained"
               className={classes.home}
@@ -361,7 +366,8 @@ const Chat = ({
               onClick={onSubmit}
             >
               Search
-            </Button>
+            </Button> */}
+            <SearchIcon style={{"position":"relative","left":"200px","bottom":"40px"}} className={classes.icon} onClick={onSubmit}></SearchIcon>
 
           </Grid>
           <Divider />
@@ -403,7 +409,7 @@ const Chat = ({
         </Grid>
 
         <Grid item xs={9}>
-          <Grid style={{ "background": "#D3D3D3" }}>
+          <Grid style={{ "background": "#D3D3D3" ,"padding":"5px"}}>
             <h2>{currentconversation && currentconversation.recipients ? (currentconversation.recipients[1].name===auth.user.name ?currentconversation.recipients[0].name : currentconversation.recipients[1].name) : ""}</h2>
             {console.log(currentconversation, "curr_CONVERSATION")}
             {currentconversation !== null ? <p>{status ? "Online" : "Offline"}<FiberManualRecordIcon className={classes.online} style={{ "position": "relative", "top": "5px" }}></FiberManualRecordIcon></p> : ""}
