@@ -19,8 +19,10 @@ import {
   EDIT_MESSAGE,
   STATE_EDIT,
   SHOW_ONLINE,
+  SET_READ,
   SET_TYPING,
   CLEAR_TYPING,
+  READ_CONV,
 } from "../actions/types";
 
 const initialState = {
@@ -30,11 +32,11 @@ const initialState = {
   user: null,
   category: null,
   conversation: [],
-  currentconversation:null,
+  currentconversation: null,
   currentevents: [],
-  dict:{},
-  status:null,
-  typing:null,
+  dict: {},
+  status: null,
+  typing: null,
 };
 
 function authReducer(state = initialState, action) {
@@ -50,76 +52,75 @@ function authReducer(state = initialState, action) {
       };
     }
     case ADDMESSAGE: {
+      
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
-        currentevents: [...state.currentevents,payload]
+        currentevents: [...state.currentevents, payload],
       };
-    } 
+    }
+      
     case SHOW_ONLINE: {
       return {
         ...state,
         isAuthenticated: true,
-        status:payload,
-       
+        status: payload,
       };
-    } 
+    }
     case DELETE_MESSAGE: {
-      
-        
-        //currentevents: [...state.currentevents,payload]
-        console.log("message deleted!")
-        console.log(payload.messageId,"this is message id")
-        console.log(payload,"thiss is paylad")
-        console.log(state.currentevents[payload.messageId - 1])
-        state.currentevents[payload.messageId - 1] = payload;
-        console.log(state.currentevents[payload.messageId - 1])
-        return {
-          ...state, 
-        }; 
-    } 
+      //currentevents: [...state.currentevents,payload]
+      console.log("message deleted!");
+      console.log(payload.messageId, "this is message id");
+      console.log(payload, "thiss is paylad");
+      console.log(state.currentevents[payload.messageId - 1]);
+      state.currentevents[payload.messageId - 1] = payload;
+      console.log(state.currentevents[payload.messageId - 1]);
+      return {
+        ...state,
+      };
+    }
     case EDIT_MESSAGE: {
       //currentevents: [...state.currentevents,payload]
-      console.log("message edited!")
-      console.log(payload.messageId,"this is message id")
-      console.log(payload,"thiss is paylad")
-      console.log(state.currentevents[payload.messageId - 1])
+      console.log("message edited!");
+      console.log(payload.messageId, "this is message id");
+      console.log(payload, "thiss is paylad");
+      console.log(state.currentevents[payload.messageId - 1]);
       state.currentevents[payload.messageId - 1] = payload;
-      console.log(state.currentevents[payload.messageId - 1])
+      console.log(state.currentevents[payload.messageId - 1]);
       return {
-        ...state, 
-      }; 
-  }   
+        ...state,
+      };
+    }
     case STATE_CONVERSATION: {
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
-        currentevents: [...state.currentevents,payload]
+        currentevents: [...state.currentevents, payload],
       };
     }
     case STATE_DELETE: {
-      console.log("message deleted!")
-      console.log(payload.messageId,"this is message id")
-      console.log(payload,"thiss is paylad")
-      console.log(state.currentevents[payload.messageId - 1])
+      console.log("message deleted!");
+      console.log(payload.messageId, "this is message id");
+      console.log(payload, "thiss is paylad");
+      console.log(state.currentevents[payload.messageId - 1]);
       state.currentevents[payload.messageId - 1] = payload;
-      console.log(state.currentevents[payload.messageId - 1])
+      console.log(state.currentevents[payload.messageId - 1]);
       return {
-        ...state, 
-      }; 
+        ...state,
+      };
     }
     case STATE_EDIT: {
-      console.log("message edited!")
-      console.log(payload.messageId,"this is message id")
-      console.log(payload,"thiss is paylad")
-      console.log(state.currentevents[payload.messageId - 1])
+      console.log("message edited!");
+      console.log(payload.messageId, "this is message id");
+      console.log(payload, "thiss is paylad");
+      console.log(state.currentevents[payload.messageId - 1]);
       state.currentevents[payload.messageId - 1] = payload;
-      console.log(state.currentevents[payload.messageId - 1])
+      console.log(state.currentevents[payload.messageId - 1]);
       return {
-        ...state, 
-      }; 
+        ...state,
+      };
     }
     case GET_EVENTS: {
       console.log("this is current events  convo");
@@ -130,6 +131,24 @@ function authReducer(state = initialState, action) {
         currentevents: payload,
       };
     }
+    case READ_CONV: {
+      console.log("this is read conv reducer");
+      console.log(payload);
+      return {
+        ...state,
+        loading: false,
+        currentevents: payload,
+      };
+    }
+    case SET_READ: {
+      for (let i = 0; i < state.currentevents.length; i++) {
+        state.currentevents[i].read = "true";
+      }
+      return {
+        ...state,
+      };
+    }
+
     case CURRENT_CONV: {
       console.log("this is current convo");
       console.log(payload);
@@ -147,7 +166,6 @@ function authReducer(state = initialState, action) {
       };
     }
     case CONV_STATE: {
-    
       console.log(payload);
       return {
         ...state,
@@ -171,16 +189,16 @@ function authReducer(state = initialState, action) {
         conversation: [],
         loading: false,
       };
-      case SET_TYPING:
-        return{
-          ...state,
-          typing:payload
-        }
-      case CLEAR_TYPING:
-        return{
-          ...state,
-          typing:null
-        }
+    case SET_TYPING:
+      return {
+        ...state,
+        typing: payload,
+      };
+    case CLEAR_TYPING:
+      return {
+        ...state,
+        typing: null,
+      };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
       localStorage.setItem("token", payload.token);
