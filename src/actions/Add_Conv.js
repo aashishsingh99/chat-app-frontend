@@ -20,6 +20,5 @@ export const Add_Conv = ({ user_name }) => async (dispatch) => {
       type: ADD_CONV,
       payload: res.data,
     });
-  
   } catch (err) {}
 };

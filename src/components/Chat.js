@@ -142,6 +142,14 @@ const Chat = ({
     Get_Events({ chatRoomId: chatid });
     Show_Online({ chat_id: chatid });
   };
+  const postFun = ({ text, chatRoomId, messageId }) => {
+    console.log("message send button clicked");
+    postMessage({
+      text: message,
+      chatRoomId: currentconversation._id,
+      messageId: currentevents.length + 1,
+    });
+  };
   //   useEffect(() => {
   //     Show_Online({chat_id:chatid});
   // },[status]);
@@ -206,6 +214,7 @@ const Chat = ({
       console.log("reding message in chat.js");
       //get events
       save_changes_to_state({ chatRoomId: chatRoomId });
+      //Get_Events({ chatRoomId: chatRoomId });
       //Get_Events({ chatRoomId: chatRoomId });
     });
   }, []);
@@ -549,7 +558,7 @@ const Chat = ({
                 <Fab
                   style={{ background: "black" }}
                   onClick={(e) =>
-                    postMessage({
+                    postFun({
                       text: message,
                       chatRoomId: currentconversation._id,
                       messageId: currentevents.length + 1,

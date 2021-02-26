@@ -24,6 +24,7 @@ import {
   CLEAR_TYPING,
   READ_CONV,
 } from "../actions/types";
+import socket from "../socketConfig";
 
 const initialState = {
   token: localStorage.getItem("token"),
@@ -92,10 +93,14 @@ function authReducer(state = initialState, action) {
       };
     }
     case STATE_CONVERSATION: {
+     
       if (
         state.currentconversation !== null &&
         state.currentconversation._id === payload.chatRoomId
       ) {
+        socket.emit("new_read_message", {
+          chatRoomId: state.currentconversation._id,
+        });
         console.log("running if in reducer");
         console.log(state.currentconversation, "jio");
         console.log(payload, "payload");
