@@ -272,12 +272,19 @@ const Chat = ({
       const text = event.text;
       const chatRoomId = event.chatRoomId;
       const messageId = event.messageId;
+      State_conversation({ event });
 
       if (
         currentconversation !== null &&
         currentconversation._id === event.chatRoomId
       ) {
-        State_conversation({ event });
+        console.log(
+          currentconversation !== null &&
+            currentconversation._id === event.chatRoomId
+        );
+        console.log(currentconversation, "currentconver");
+        console.log(currentconversation._id, "c");
+        console.log(event.chatRoomId, "id");
       } else {
         //send notification of new event
       }

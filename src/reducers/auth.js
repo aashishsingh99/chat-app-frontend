@@ -52,7 +52,6 @@ function authReducer(state = initialState, action) {
       };
     }
     case ADDMESSAGE: {
-      
       return {
         ...state,
         isAuthenticated: true,
@@ -60,7 +59,7 @@ function authReducer(state = initialState, action) {
         currentevents: [...state.currentevents, payload],
       };
     }
-      
+
     case SHOW_ONLINE: {
       return {
         ...state,
@@ -93,12 +92,28 @@ function authReducer(state = initialState, action) {
       };
     }
     case STATE_CONVERSATION: {
-      return {
-        ...state,
-        isAuthenticated: true,
-        loading: false,
-        currentevents: [...state.currentevents, payload],
-      };
+      if (
+        state.currentconversation !== null &&
+        state.currentconversation._id === payload.chatRoomId
+      ) {
+        console.log("running if in reducer");
+        console.log(state.currentconversation, "jio");
+        console.log(payload, "payload");
+        return {
+          ...state,
+          isAuthenticated: true,
+          loading: false,
+          currentevents: [...state.currentevents, payload],
+        };
+      } else {
+        console.log("running else in reducer");
+        //send notification of new event
+        return {
+          ...state,
+          isAuthenticated: true,
+          loading: false,
+        };
+      }
     }
     case STATE_DELETE: {
       console.log("message deleted!");
