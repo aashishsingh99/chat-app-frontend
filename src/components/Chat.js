@@ -15,10 +15,13 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Avatar from "@material-ui/core/Avatar";
 import Fab from "@material-ui/core/Fab";
+import moment from 'moment';
 import SendIcon from "@material-ui/icons/Send";
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import BlockIcon from '@material-ui/icons/Block';
 import { useState } from "react";
 import Button from "@material-ui/core/Button";
 import { Get_Conv } from "../actions/Get_Conv";
@@ -47,6 +50,7 @@ import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import SearchIcon from "@material-ui/icons/Search";
 import DoneAllIcon from "@material-ui/icons/DoneAll";
 import DoneIcon from "@material-ui/icons/Done";
+import LandingPage from "../components/LandingPage";
 //import moment from "moment";
 const useStyles = makeStyles({
   root: {
@@ -73,6 +77,7 @@ const useStyles = makeStyles({
   icon: {
     "&:hover": {
       cursor: "pointer",
+      color:"grey",
     },
   },
   accounticon: {
@@ -81,19 +86,26 @@ const useStyles = makeStyles({
   },
   hoverMessage: {
     padding: 10,
-    marginRight: "10%",
+    marginRight: "0%",
     marginTop: "1%",
     background: "light",
 
     "&:hover": {
       backgroundColor: "#f7f5f5",
+      
     },
   },
+
+
   online: {
     height: 15,
     width: 15,
     color: "green",
     margin: 2,
+  },
+  gridList: {
+    width: 500,
+    height: 450,
   },
 });
 
@@ -354,13 +366,13 @@ const Chat = ({
   const classes = useStyles();
 
   return (
-    <div style={{ "padding-top": "20px" }}>
+    <div style={{ "padding-top": "50px" ,"height":"800px"}}>
       <Grid container>
         <Grid item xs={12}>
           <Typography variant="h5" className="header-message"></Typography>
         </Grid>
       </Grid>
-      <Grid container component={Paper} className={classes.chatSection}>
+      <Grid container  component={Paper} className={classes.chatSection}>
         <Grid item xs={3} className={classes.borderRight500}>
           <List>
             <ListItem button key={user_name}>
@@ -378,6 +390,7 @@ const Chat = ({
           <Divider />
           <Grid item xs={12} style={{ padding: "10px" }}>
             <TextField
+            
               name="search"
               id="outlined-basic-email"
               label="Enter User Name..."
@@ -386,7 +399,7 @@ const Chat = ({
               fullWidth
             />
 
-            {/* <Button 
+            <Button 
               type="submit"
               variant="contained"
               className={classes.home}
@@ -394,14 +407,14 @@ const Chat = ({
               onClick={onSubmit}
             >
               Search
-            </Button> */}
-            <SearchIcon
-              style={{ position: "relative", left: "200px", bottom: "40px" }}
+            </Button>
+            <SearchIcon fontSize="large"
+              style={{ position: "relative", left: "50px", bottom: "40px" }}
               className={classes.icon}
               onClick={onSubmit}
             ></SearchIcon>
           </Grid>
-          <Divider />
+          {/* <Divider /> */}
           <List>
             {!conversation.length ? (
               <h1>No Contacts Found</h1>
@@ -419,13 +432,13 @@ const Chat = ({
                     }
                   >
                     <ListItemIcon>
-                      <PersonAddIcon />
+                      <PersonAddIcon fontSize="large"/>
                     </ListItemIcon>
                     <ListItemText
                       primary={
                         x.recipients[0].name === auth.user.name
-                          ? x.recipients[1].name
-                          : x.recipients[0].name
+                          ?<div><b> {x.recipients[1].name}</b></div>
+                          : <b>{x.recipients[0].name}</b>
                       }
                     >
                       {x.recipients[0].name === auth.user.name
@@ -438,9 +451,11 @@ const Chat = ({
             )}
           </List>
         </Grid>
-
+                        {/* right hand side */}
         <Grid item xs={9}>
+        {currentconversation?<Fragment>
           <Grid style={{ background: "#D3D3D3", padding: "5px" }}>
+           
             <h2>
               {currentconversation && currentconversation.recipients
                 ? currentconversation.recipients[1].name === auth.user.name
@@ -464,21 +479,26 @@ const Chat = ({
               ? currentconversation._id === typing && <span>typing...</span>
               : ""}
           </Grid>
-          <Grid>
+          
+          <Grid style={{"overflow":"scroll","overflow-x":"hidden", "height":"40%"}}>
+            
+             
+            
             <List className={classes.messageArea}>
               {currentevents.length > 0 &&
                 currentevents.map((curr) => (
                   <Fragment>
-                    <Grid className={classes.hoverMessage}>
+                    <Grid className={classes.hoverMessage} >
                       <ListItem>
                         <Grid container>
-                          <Grid item xs={12}>
+                          <Grid  item xs={12}>
                             {curr.sender !== auth.user._id && (
                               <ListItemText
                                 align="left"
+                                //primary={curr.text==="This message is deleted!"?<i><em>"KOL"</em></i>:<div>{curr.text}</div>}
                                 primary={curr.text}
-                                secondary={curr.date.substr(11, 5)}
-
+                                //secondary={curr.date.substr(11, 5)}
+                                secondary={moment(curr.date).format("LT")}
                                 //{curr?(curr.read?(<DoneAllIcon></DoneAllIcon>):(<DoneIcon></DoneIcon>)):(Loading)}
                                 //secondary={moment(curr.date).format("LT")}
                               ></ListItemText>
@@ -486,23 +506,31 @@ const Chat = ({
                             {curr.sender === auth.user._id && (
                               <Fragment>
                                 <Grid container>
-                                  <Grid item xs={11}>
+                                  <Grid item xs={11} >
                                     <ListItemText
+                                    
                                       align="right"
                                       primary={curr.text}
                                       secondary={curr.date.substr(11, 5)}
                                     ></ListItemText>
                                   </Grid>
                                   <Grid item xs={1}>
+                                  
                                     {curr ? (
                                       curr.read === "true" ? (
-                                        <DoneAllIcon></DoneAllIcon>
+                                        
+                                        curr.text !=="This message is deleted" ? <DoneAllIcon></DoneAllIcon>:<BlockIcon></BlockIcon>
                                       ) : (
-                                        <DoneIcon></DoneIcon>
+                                        curr.text !=="This message is deleted" ? <DoneIcon></DoneIcon>:<BlockIcon></BlockIcon>
+                                        
                                       )
                                     ) : (
                                       "Loading"
                                     )}
+                                   
+                                    
+                      
+                                    {curr.text!=="This message is deleted"?
                                     <DeleteIcon
                                       className={classes.icon}
                                       // onClick={(e) =>
@@ -519,6 +547,8 @@ const Chat = ({
                                         top: "10px",
                                       }}
                                     ></DeleteIcon>
+                                      :""}
+                                    {curr.text!=="This message is deleted"?
                                     <EditIcon
                                       className={classes.icon}
                                       style={{
@@ -528,6 +558,7 @@ const Chat = ({
                                       }}
                                       onClick={(e) => fun3({ curr: curr })}
                                     ></EditIcon>
+                                     :"" }
                                   </Grid>
                                 </Grid>
                               </Fragment>
@@ -542,11 +573,15 @@ const Chat = ({
                   </Fragment>
                 ))}
             </List>
+              
           </Grid>
-          <Divider />
+          
+          
+         
+          {/* <Divider /> */}
           {currentconversation !== null ? (
-            <Grid container style={{ padding: "20px" }}>
-              <Grid item xs={11}>
+            <Grid container style={{ "height":"100%","position":"relative","left":"60px","padding": "10px 100px" }}>
+              <Grid item xs={11} >
                 <TextField
                   id="outlined-basic-email"
                   label="Write a Message"
@@ -574,7 +609,10 @@ const Chat = ({
           ) : (
             ""
           )}
+          </Fragment>:<div ><LandingPage></LandingPage></div>
+}
         </Grid>
+        
       </Grid>
 
       <div>
