@@ -57,6 +57,11 @@ const useStyles = makeStyles({
     maxWidth: 345,
     marginTop: 20,
   },
+  messageArea: {
+    height: '65vh',
+    overflowY: 'auto',
+    border: '1px solid #f7f5f5',
+  },
   media: {
     marginTop: 50,
     height: 140,
@@ -480,7 +485,7 @@ const Chat = ({
               : ""}
           </Grid>
           
-          <Grid style={{"overflow":"scroll","overflow-x":"hidden", "height":"40%"}}>
+          <Grid >
             
              
             
@@ -554,7 +559,7 @@ const Chat = ({
                                       style={{
                                         position: "absolute",
                                         top: "10px",
-                                        right: "1px",
+                                        right: "-5px",
                                       }}
                                       onClick={(e) => fun3({ curr: curr })}
                                     ></EditIcon>
@@ -580,8 +585,8 @@ const Chat = ({
          
           {/* <Divider /> */}
           {currentconversation !== null ? (
-            <Grid container style={{ "height":"100%","position":"relative","left":"60px","padding": "10px 100px" }}>
-              <Grid item xs={11} >
+            <Grid container>
+              <Grid item xs={11}>
                 <TextField
                   id="outlined-basic-email"
                   label="Write a Message"
